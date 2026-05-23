@@ -602,15 +602,20 @@ def callback():
         return _err("Missing code or PKCE verifier"), 400
 
     # --- Token exchange ----------------------------------------------------
-    # Hawcx's /oauth2/token expects only `code` and `code_verifier` (plus the
-    # Kong x-config-id header). A stock library will also send grant_type,
-    # client_id, and redirect_uri — Hawcx ignores the extras since they're
-    # not declared as Form parameters on the handler.
+    # Hawcx's /oauth2/token follows the public-client OIDC profile per
+    # RFC 6749 §3.2.1 + OIDC Core §3.1.3.2: client_id is required as a
+    # form field (it identifies the RP and is what gets stamped into the
+    # id_token's aud claim). No client secret — public-client + PKCE is
+    # the auth mechanism. The legacy Kong x-config-id header is no longer
+    # required at this endpoint.
     try:
         token_resp = requests.post(
             _discovery["token_endpoint"],
-            data={"code": code, "code_verifier": verifier},
-            headers={"x-config-id": CONFIG_ID},
+            data={
+                "code": code,
+                "code_verifier": verifier,
+                "client_id": CLIENT_ID,
+            },
             timeout=15,
         )
     except requests.RequestException as e:
