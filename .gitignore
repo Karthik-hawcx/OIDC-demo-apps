@@ -1,0 +1,3 @@
+# Local-dev symlink to the workspace SDK for the login UI (vite alias target).
+# Created at runtime; not part of the repo.
+/hawcx_web_demo

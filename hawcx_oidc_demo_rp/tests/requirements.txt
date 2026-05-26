@@ -1,0 +1,7 @@
+# Test-only deps for tests/test_private_key_jwt_e2e.py (not needed to run the RP).
+# Install:  pip install -r tests/requirements.txt
+pytest>=8.0,<10
+pytest-asyncio>=0.23,<2
+httpx>=0.27,<1          # async HTTP client for the flow calls
+PyJWT[crypto]>=2.8,<3   # decode id_tokens + sign the EdDSA client_assertion
+# cryptography + python-dotenv already come from the RP's requirements.txt
